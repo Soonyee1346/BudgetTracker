@@ -1,0 +1,15 @@
+IMPORT db
+
+ROUTE: GET /budgets
+    QUERY: SELECT * FROM budgets
+    RETURN JSON array
+
+ROUTE: POST /budgets
+    READ category and monthly_limit from req.body
+    VALIDATE: category exists and monthly_limit is a number
+    UPSERT:
+        IF category exists
+            UPDATE budgets SET monthly_limit = ? WHERE category = ?
+        ELSE
+            INSERT INTO budgets (category, monthly_limit) VALUES (?, ?)
+    RETURN new/updated budget as JSON

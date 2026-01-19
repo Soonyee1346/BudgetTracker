@@ -1,0 +1,40 @@
+FUNCTION getMonthlySummary(month)
+
+1Fetch Data
+   expensesPromise = fetch expenses WHERE date LIKE "month-%"
+   budgetsPromise = fetch all budgets
+   Wait for both promises (Promise.all)
+
+2Aggregate Expenses
+   Initialize totalSpent = 0
+   Initialize byCategory = {}
+
+   FOR EACH expense IN expenses
+       totalSpent += expense.amount
+       IF byCategory[expense.category] does not exist
+           byCategory[expense.category] = 0
+       byCategory[expense.category] += expense.amount
+       Round byCategory[expense.category] to 2 decimals
+
+   Round totalSpent to 2 decimals
+
+3Calculate Budget Status
+   Initialize budgetStatus = {}
+
+   FOR EACH budget IN budgets
+       spent = byCategory[budget.category] OR 0
+       limit = budget.monthly_limit
+       overBudget = spent > limit
+       Round spent and limit to 2 decimals
+       budgetStatus[budget.category] = { limit, spent, overBudget }
+
+4Return Summary
+   RETURN {
+       totalSpent,
+       byCategory,
+       budgetStatus
+   }
+
+Error Handling
+   IF any database query fails
+       THROW error

@@ -1,0 +1,18 @@
+ROUTE: GET /summary/monthly
+INPUT: month (from query parameter)
+
+Validate Input
+   IF month is missing
+       RETURN 400 Bad Request ("Month is required")
+   IF month format is not YYYY-MM
+       RETURN 400 Bad Request ("Invalid month format")
+
+Call Service
+   summary = await summaryService.getMonthlySummary(month)
+
+Return Response
+   RETURN summary as JSON
+
+Error Handling
+   IF service throws error
+       RETURN 500 Internal Server Error with error message
