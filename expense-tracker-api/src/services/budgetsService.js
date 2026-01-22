@@ -60,6 +60,7 @@ const updateBudget = async (id, category, monthly_limit) => {
 }
 
 const deleteBudget = async (id) => {
+
     try {
         await prisma.budget.delete({
             where: { id }

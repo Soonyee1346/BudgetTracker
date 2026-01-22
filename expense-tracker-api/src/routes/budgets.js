@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'Category is required and must be a string' });
     }
 
-    if (monthly_limit === undefined || typeof monthly_limit !== 'string' || monthly_limit < 0) {
+    if (monthly_limit === undefined || typeof monthly_limit !== 'number' || monthly_limit < 0) {
         return res.status(400).json({ error: 'monthly_limit is required and must be a positive number' });
     }
 
@@ -52,7 +52,9 @@ router.put('/:id', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    const { id } = req.params;
+    let { id } = req.params;
+
+    id = Number(id);
 
     try {
         const result = await budgetsService.deleteBudget(id);

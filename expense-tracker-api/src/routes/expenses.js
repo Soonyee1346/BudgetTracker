@@ -4,6 +4,16 @@ const categories = require('../constants/categories');
 
 const router = express.Router();
 
+const toPrismaDate = (dateString) => {
+    if (dateString instanceof Date) return dateString;
+
+    if (!dateString.includes('T')) {
+        return new Date(dateString + 'T00:00:00.000Z');
+    }
+
+    return new Date(dateString);
+};
+
 router.get('/', async (req, res) => {
     const { month } = req.query;
 
@@ -28,11 +38,7 @@ router.post('/', async (req, res) => {
         });
     }
 
-
-    const [year, monthPart, dayPart] = date.split('-');
-    const monthPadded = monthPart.padStart(2, '0');
-    const dayPadded = dayPart.padStart(2, '0');
-    const formattedDate = `${year}-${monthPadded}-${dayPadded}`;
+    const formattedDate = toPrismaDate(date);
 
     try {
         const result = await expensesService.addExpense(amount, category, description, formattedDate);
@@ -43,7 +49,9 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    const { id } = req.params;
+    let { id } = req.params;
+
+    id = Number(id);
 
     try {
         const result = await expensesService.deleteExpense(id);
@@ -58,7 +66,9 @@ router.delete('/:id', async (req, res) => {
 })
 
 router.put('/:id', async (req, res) => {
-    const { id } = req.params;
+    let { id } = req.params;
+
+    id = Number(id);
 
     const { amount, category, description, date } = req.body;
 
@@ -73,10 +83,7 @@ router.put('/:id', async (req, res) => {
     }
 
 
-    const [year, monthPart, dayPart] = date.split('-');
-    const monthPadded = monthPart.padStart(2, '0');
-    const dayPadded = dayPart.padStart(2, '0');
-    const formattedDate = `${year}-${monthPadded}-${dayPadded}`;
+    const formattedDate = toPrismaDate(date);
 
     try {
         const result = await expensesService.updateExpense(id, amount, category, description, formattedDate);
