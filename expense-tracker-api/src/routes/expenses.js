@@ -1,9 +1,19 @@
 const express = require('express');
-const db = require('../db/database');
 const expensesService = require('../services/expensesService');
 const categories = require('../constants/categories');
 
 const router = express.Router();
+
+router.get('/', async (req, res) => {
+    const { month } = req.query;
+
+    try {
+        const result = await expensesService.getExpenses(month);
+        res.status(201).json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 router.post('/', async (req, res) => {
     const { amount, category, description, date } = req.body;
@@ -31,17 +41,6 @@ router.post('/', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 })
-
-router.get('/', async (req, res) => {
-    const { month } = req.query;
-
-    try {
-        const result = await expensesService.getExpenses(month);
-        res.status(201).json(result);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
 
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;

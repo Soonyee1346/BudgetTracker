@@ -1,88 +1,73 @@
-const db = require('../db/database')
+const prisma = require('../db/prismaClient')
 
-const addExpense = (amount, category, description, date) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            INSERT INTO expenses (amount, category, description, date)
-            VALUES (?, ?, ?, ?)
-        `;
-        db.run(query, [amount, category, description, date], function (err) {
-            if (err) return reject(err);
+const getExpenses = async (month) => {
+    let where = {};
 
-            resolve({
-                id: this.lastID,
-                amount,
-                category,
-                description,
-                date
-            });
-        })
-    })
+    if (month) {
+        const start = new Date(`${month}-01`);
+        const end = new Date(start);
+        end.setMonth(end.getMonth() + 1);
+
+        where = {
+            date: {
+                gte: start,
+                lt: end
+            }
+        };
+    }
+    const rows = await prisma.expense.findMany({
+        where,
+        orderBy: { date: 'asc' }
+    });
+
+    return { rows };
 }
 
-const getExpenses = (month) => {
-    return new Promise((resolve, reject) => {
-        let query = 'SELECT * FROM expenses';
-        let params = [];
+const addExpense = async (amount, category, description, date) => {
+    
+    return await prisma.expense.create({
+        data: { amount, category, description, date }
+    });
+}
 
-        if (month) {
-            query += ' WHERE date LIKE ? ORDER BY date ASC';
-            params.push(`${month}-%`);
-        }
-
-        db.all(query, params, (err, rows) => {
-            if (err) return reject(err);
-
-            resolve(rows);
+const deleteExpense = async (id) => {
+    try {
+        await prisma.expense.delete({
+            where: { id }
         });
-    })
+
+        return { deleted: true };
+    } catch {
+        return { deleted: false };
+    }
 }
 
-const deleteExpense = (id) => {
-    return new Promise((resolve, reject) => {
-        db.run('DELETE FROM expenses WHERE id = ?', [id], function (err) {
-            if (err) return reject(err);
-
-            if (this.changes === 0) {
-                return resolve({ deleted: false });
+const updateExpense = async (id, amount, category, description, date) => {
+    try {
+        const updated = await prisma.expense.update({
+            where: { id },
+            data: {
+                amount, 
+                category, 
+                description, 
+                date
             }
+        });
 
-            return resolve({ deleted: true });
-        })
-    })
-}
-
-const updateExpense = (id, amount, category, description, date) => {
-    return new Promise((resolve, reject) => {
-        db.get('SELECT * FROM expenses WHERE id = ?', [id], (err, row) => {
-            if (err) return reject(err);
-
-            if (row) {
-                const query = 'UPDATE expenses SET amount = ?, category = ?, description = ?, date = ? WHERE id = ?';
-                db.run(query, [amount, category, description, date, id], function (err) {
-                    if (err) return reject(err);
-
-                    resolve({
-                        id,
-                        amount,
-                        category,
-                        description,
-                        date,
-                        updated: true
-                    });
-                })
-            } else {
-                resolve({
-                    id,
-                    amount,
-                    category,
-                    description,
-                    date,
-                    updated: false
-                });
-            }
-        })
-    })
+        return {
+            ...updated,
+            updated: true
+        };
+    } catch {
+        return {
+            id,
+            amount,
+            category,
+            description,
+            date,
+            updated: false
+        }
+    }
 }
 
 module.exports = {

@@ -1,90 +1,74 @@
-const db = require('../db/database')
+const prisma = require('../db/prismaClient')
 
-const upsertBudget = (category, monthly_limit) => {
-    return new Promise((resolve, reject) => {
-        db.get('SELECT * FROM budgets WHERE category = ?', [category], (err, row) => {
-            if (err) return reject(err);
+const upsertBudget = async (category, monthly_limit) => {
 
-            if (row) {
-                const query = 'UPDATE budgets SET monthly_limit = ? WHERE category = ?';
-                db.run(query, [monthly_limit, category], function (err) {
-                    if (err) return reject(err);
+    const existing = await prisma.budget.findFirst({
+        where: { category }
+    });
 
-                    resolve({
-                        category,
-                        monthly_limit,
-                        updated: true
-                    });
-                })
-            } else {
-                const query = `INSERT INTO budgets (category, monthly_limit) VALUES (?, ?)`;
-                db.run(query, [category, monthly_limit], function (err) {
-                    if (err) return reject(err);
-
-                    resolve({
-                        id: this.lastID,
-                        category,
-                        monthly_limit,
-                        updated: false
-                    });
-                });
-            }
-        })
-    })
-}
-
-const getBudgets = () => {
-    return new Promise((resolve, reject) => {
-        let query = 'SELECT * FROM budgets';
-
-        db.all(query, [], (err, rows) => {
-            if (err) return reject(err);
-            resolve({rows});
+    if (existing) {
+        const updated = await prisma.budget.update({
+            where: { id: existing.id },
+            data: { monthly_limit }
         });
-    })
+
+        return {
+            category,
+            monthly_limit,
+            updated: true
+        };
+    }
+
+    const created = await prisma.budget.create({
+        data: { category, monthly_limit }
+    });
+   
+    return {
+        id: created.id,
+        category,
+        monthly_limit,
+        updated: false
+    };
+};
+
+const getBudgets = async () => {
+        const rows = await prisma.budget.findMany()
+        return { rows }; 
+};
+
+const updateBudget = async (id, category, monthly_limit) => {
+    try {
+        const updated = await prisma.budget.update({
+            where: { id },
+            data: { monthly_limit }
+        });
+
+        return {
+            id,
+            category,
+            monthly_limit,
+            updated: true
+        };
+    } catch {
+        return {
+            id,
+            category,
+            monthly_limit,
+            updated: false
+        }
+    }
 }
 
-const updateBudget = (id, category, monthly_limit) => {
-    return new Promise((resolve, reject) => {
-        db.get('SELECT * FROM budgets WHERE id = ?', [id], (err, row) => {
-            if (err) return reject(err);
+const deleteBudget = async (id) => {
+    try {
+        await prisma.budget.delete({
+            where: { id }
+        });
 
-            if (row) {
-                const query = 'UPDATE budgets SET monthly_limit = ? WHERE id = ?';
-                db.run(query, [monthly_limit, id], function (err) {
-                    if (err) return reject(err);
-
-                    resolve({
-                        id,
-                        category,
-                        monthly_limit,
-                        updated: true
-                    });
-                })
-            } else {
-                resolve({
-                    id,
-                    category,
-                    monthly_limit,
-                    updated: false
-                });
-            }
-        })
-    })
-}
-
-const deleteBudget = (id) => {
-    return new Promise((resolve, reject) => {
-        db.run('DELETE FROM budgets WHERE id = ?', [id], function(err) {
-            if (err) return reject(err);
-
-            if (this.changes === 0){
-                return resolve({ deleted: false});
-            }
-
-            return resolve({ deleted: true});
-        })
-    })
+        return { deleted: true };
+    } catch {
+        return { deleted: false };
+    }
 }
 
 module.exports = {

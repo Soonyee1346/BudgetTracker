@@ -1,4 +1,4 @@
-require('./db/database');
+require('./db/prismaClient');
 const express = require('express');
 
 const app = express();
