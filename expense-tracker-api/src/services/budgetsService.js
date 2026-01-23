@@ -38,9 +38,13 @@ const getBudgets = async () => {
 
 const updateBudget = async (id, category, monthly_limit) => {
     try {
+
+        budget_monthly_limit = Number(monthly_limit);
+        budgetId = Number(id);
+
         const updated = await prisma.budget.update({
-            where: { id },
-            data: { monthly_limit }
+            where: { id: budgetId },
+            data: { monthly_limit: budget_monthly_limit }
         });
 
         return {

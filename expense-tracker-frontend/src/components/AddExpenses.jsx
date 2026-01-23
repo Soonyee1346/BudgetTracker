@@ -52,6 +52,11 @@ const ExpenseRow = ({ expense, onDelete, onUpdate, index }) => {
         setIsEditing(false);
     }
 
+    const formatDate = (date) => {
+        const formattedDate = new Date(date).toISOString().slice(0, 10);
+        return formattedDate;
+    }
+
     const rowBg = index % 2 === 0 ? '#f9f9f9' : '#ffffff'; // Zebra striping
 
     return (
@@ -78,7 +83,7 @@ const ExpenseRow = ({ expense, onDelete, onUpdate, index }) => {
                         onChange={handleChange}
                     />
                 ) : (
-                    date
+                    formatDate(date)
                 )}
             </td>
             <td style={{ padding: '12px 8px', wordBreak: 'break-word' }}>

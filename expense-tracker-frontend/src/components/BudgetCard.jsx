@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-
 const BudgetCard = ({ budget, onDelete, onUpdate }) => {
     const { category, id, monthly_limit } = budget;
 

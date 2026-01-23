@@ -3,15 +3,17 @@ const router = express.Router();
 const budgetsService = require('../services/budgetsService');
 
 router.post('/', async (req, res) => {
-    const { category, monthly_limit } = req.body;
+    let { category, monthly_limit } = req.body;
 
     if (!category || typeof category !== 'string' || category.trim() === '') {
         return res.status(400).json({ error: 'Category is required and must be a string' });
     }
 
-    if (monthly_limit === undefined || typeof monthly_limit !== 'number' || monthly_limit < 0) {
+    if (monthly_limit === undefined || typeof monthly_limit !== 'string' || monthly_limit < 0) {
         return res.status(400).json({ error: 'monthly_limit is required and must be a positive number' });
     }
+
+    monthly_limit = Number(monthly_limit);
 
     try {
         const result = await budgetsService.upsertBudget(category, monthly_limit);

@@ -20,7 +20,7 @@ const getExpenses = async (month) => {
         orderBy: { date: 'asc' }
     });
 
-    return { rows };
+    return rows;
 }
 
 const addExpense = async (amount, category, description, date) => {
