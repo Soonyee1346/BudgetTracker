@@ -44,6 +44,7 @@ const deleteExpense = async (id) => {
 
 const updateExpense = async (id, amount, category, description, date) => {
     try {
+
         const updated = await prisma.expense.update({
             where: { id },
             data: {

@@ -28,6 +28,8 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { amount, category, description, date } = req.body;
 
+    console.log(`${amount} ${category} ${description} ${date}`)
+
     if (!amount || !category || !date) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -41,7 +43,7 @@ router.post('/', async (req, res) => {
     const formattedDate = toPrismaDate(date);
 
     try {
-        const result = await expensesService.addExpense(amount, category, description, formattedDate);
+        const result = await expensesService.addExpense(Number(amount), category, description, formattedDate);
         res.status(201).json(result);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -70,7 +72,9 @@ router.put('/:id', async (req, res) => {
 
     id = Number(id);
 
-    const { amount, category, description, date } = req.body;
+    let { amount, category, description, date } = req.body;
+
+    amount = Number(amount);
 
     if (!amount || !category || !date) {
         return res.status(400).json({ error: 'Missing required fields' });
@@ -81,7 +85,6 @@ router.put('/:id', async (req, res) => {
             error: `Invalid category. Must be one of: ${categories.join(', ')}`
         });
     }
-
 
     const formattedDate = toPrismaDate(date);
 

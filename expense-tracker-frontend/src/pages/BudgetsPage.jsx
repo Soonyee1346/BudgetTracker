@@ -15,8 +15,8 @@ const BudgetsPage = () => {
         }
     }
 
-    const handleDeleteBudget = async (budgetId) => {
-        const confirmed = window.confirm(`Delete budget: ${budgetId}?`);
+    const handleDeleteBudget = async (budgetId, category) => {
+        const confirmed = window.confirm(`Delete budget: ${category}?`);
         if (!confirmed) return;
 
         try {

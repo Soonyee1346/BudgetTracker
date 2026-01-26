@@ -6,5 +6,6 @@ module.exports = [
     'Entertainment',
     'Groceries',
     'Subscriptions',
+    'Golf',
     'Other'
 ];

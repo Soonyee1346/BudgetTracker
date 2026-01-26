@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ExpenseRow = ({ expense, onDelete, onUpdate, index }) => {
     const { id, amount, category, description, date } = expense;
@@ -31,26 +31,25 @@ const ExpenseRow = ({ expense, onDelete, onUpdate, index }) => {
                 body: JSON.stringify(formData)
             });
 
-            setIsEditing(false);
-            resetForm();
             onUpdate();
+            resetForm();
         } catch (err) {
             console.error('Failed to update expense', err)
         }
     }
 
     const resetForm = () => {
-        setFormData(
-            {
-                amount,
-                category,
-                description,
-                date
-            }
-        );
-
         setIsEditing(false);
     }
+
+    useEffect(() => {
+        setFormData({
+            amount: expense.amount.toFixed(2),
+            category: expense.category,
+            description: expense.description,
+            date: expense.date
+        });
+    }, [expense]);
 
     const formatDate = (date) => {
         const formattedDate = new Date(date).toISOString().slice(0, 10);
@@ -79,7 +78,7 @@ const ExpenseRow = ({ expense, onDelete, onUpdate, index }) => {
                     <input
                         type="date"
                         name="date"
-                        value={formData.date}
+                        value={formatDate(formData.date)}
                         onChange={handleChange}
                     />
                 ) : (

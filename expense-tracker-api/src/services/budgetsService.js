@@ -22,7 +22,7 @@ const upsertBudget = async (category, monthly_limit) => {
     const created = await prisma.budget.create({
         data: { category, monthly_limit }
     });
-   
+
     return {
         id: created.id,
         category,
@@ -32,8 +32,12 @@ const upsertBudget = async (category, monthly_limit) => {
 };
 
 const getBudgets = async () => {
-        const rows = await prisma.budget.findMany()
-        return { rows }; 
+    const rows = await prisma.budget.findMany({
+        orderBy: {
+            id: 'asc'
+        }
+    })
+    return { rows };
 };
 
 const updateBudget = async (id, category, monthly_limit) => {

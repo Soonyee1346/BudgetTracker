@@ -77,6 +77,7 @@ const AddExpenseForm = ({ onNewExpense }) => {
                     <option value="Entertainment">Entertainment</option>
                     <option value="Groceries">Groceries</option>
                     <option value="Subscriptions">Subscriptions</option>
+                    <option value="Golf">Golf</option>
                     <option value="Other">Other</option>
                 </select>
 

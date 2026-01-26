@@ -55,7 +55,7 @@ const AddMonthlyExpenseSummary = ({ summary, month, setMonth, setCategoryFilter 
 
                             return (
                                 <div
-                                    y={category}
+                                    key={category}
                                     style={{
                                         border: '1px solid #ddd',
                                         borderRadius: '8px',

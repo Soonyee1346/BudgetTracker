@@ -93,7 +93,7 @@ const BudgetCard = ({ budget, onDelete, onUpdate }) => {
                         gap: '8px'
                     }}>
                         <button onClick={() => setIsEditing(true)}>Edit</button>
-                        <button onClick={() => onDelete(id)}>Delete</button>
+                        <button onClick={() => onDelete(id, category)}>Delete</button>
                     </div>
                 </>
             )}
