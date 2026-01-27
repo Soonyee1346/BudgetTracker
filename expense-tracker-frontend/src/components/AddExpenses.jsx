@@ -23,7 +23,7 @@ const ExpenseRow = ({ expense, onDelete, onUpdate, index }) => {
 
     const handleSave = async () => {
         try {
-            await fetch(`/expenses/${expense.id}`, {
+            await fetch(`${process.env.REACT_APP_API_URL}/expenses/${expense.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

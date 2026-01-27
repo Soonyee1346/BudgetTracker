@@ -1,8 +1,6 @@
 
 const AddMonthlyExpenseSummary = ({ summary, month, setMonth, setCategoryFilter }) => {
 
-    console.log(summary)
-
     return (
         <>
             <h2>Monthly Expense Summary</h2>

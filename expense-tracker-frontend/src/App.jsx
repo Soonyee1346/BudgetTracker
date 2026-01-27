@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
-import DashboardPage from './components/DashboardPage';
+import DashboardPage from './pages/DashboardPage';
 import BudgetsPage from './pages/BudgetsPage';
 
 function App() {

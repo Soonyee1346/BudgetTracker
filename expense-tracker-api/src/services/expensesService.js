@@ -15,12 +15,17 @@ const getExpenses = async (month) => {
             }
         };
     }
-    const rows = await prisma.expense.findMany({
+    try {
+        const rows = await prisma.expense.findMany({
         where,
         orderBy: { date: 'asc' }
     });
 
     return rows;
+    }
+    catch (err) {
+        throw err;
+    }
 }
 
 const addExpense = async (amount, category, description, date) => {

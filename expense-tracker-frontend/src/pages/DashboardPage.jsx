@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import AddExpenseForm from './AddExpenseForm';
-import AddMonthlyExpenseSummary from './AddMonthlyExpenseSummary';
-import AddExpenses from './AddExpenses';
+import AddExpenseForm from '../components/AddExpenseForm';
+import AddMonthlyExpenseSummary from '../components/AddMonthlyExpenseSummary';
+import AddExpenses from '../components/AddExpenses';
 
 const DashboardPage = () => {
     const [month, setMonth] = useState('2026-01');
@@ -11,7 +11,7 @@ const DashboardPage = () => {
 
     const loadSummary = useCallback(async () => {
         try {
-            const res = await fetch(`/summary/monthly?month=${month}`);
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/summary/monthly?month=${month}`);
             const data = await res.json();
             setSummary(data);
         } catch (err) {
@@ -21,7 +21,7 @@ const DashboardPage = () => {
 
     const loadExpenses = useCallback(async () => {
         try {
-            const res = await fetch(`/expenses?month=${month}`);
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/expenses?month=${month}`);
             const data = await res.json();
             setExpenses(data);
         } catch (err) {
@@ -52,7 +52,7 @@ const DashboardPage = () => {
         if (!confirmed) return;
 
         try {
-            await fetch(`/expenses/${expenseId}`, {
+            await fetch(`${process.env.REACT_APP_API_URL}/expenses/${expenseId}`, {
                 method: 'DELETE'
             });
 
