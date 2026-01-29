@@ -40,7 +40,7 @@ const getBudgets = async () => {
         }
     })
 
-    const formattedRows = rows.map(budget = ({
+    const formattedRows = rows.map(budget => ({
         ...budget,
         monthly_limit: budget.monthly_limit.toNumber()
     }));

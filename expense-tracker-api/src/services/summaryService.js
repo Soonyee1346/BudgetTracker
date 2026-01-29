@@ -2,8 +2,6 @@ const prisma = require('../db/prismaClient');
 
 const getMonthlySummary = async (month) => {
 
-    console.log("hi")
-
     const start = new Date(`${month}-01`);
     const end = new Date(start);
     end.setMonth(end.getMonth() + 1);
@@ -25,7 +23,7 @@ const getMonthlySummary = async (month) => {
 
     expenses.forEach(({ amount, category }) => {
         const val = amount.toNumber();
-        totalSpent += amount;
+        totalSpent += val;
         byCategory[category] = (byCategory[category] || 0) + val;
     });
 
