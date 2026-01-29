@@ -67,11 +67,15 @@ jobs:
         with:
           context: ./expense-tracker-api
           push: true
-          tags: ghcr.io/${{ env.REPO_LOWER }}/api:${{ github.ref_name }}
+          tags: |
+            ghcr.io/${{ env.REPO_LOWER }}/api:${{ github.sha }}
+            ghcr.io/${{ env.REPO_LOWER }}/api:latest
       
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
           context: ./expense-tracker-frontend
           push: true
-          tags: ghcr.io/${{ env.REPO_LOWER }}/frontend:${{ github.ref_name }}
+          tags: |
+            ghcr.io/${{ env.REPO_LOWER }}/frontend:${{ github.sha }}
+            ghcr.io/${{ env.REPO_LOWER }}/frontend:latest
