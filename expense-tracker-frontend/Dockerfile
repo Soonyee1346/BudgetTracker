@@ -1,7 +1,7 @@
 # frontend/Dockerfile
 
 # 1️⃣ Base image
-FROM node:20-alpine
+FROM node:20-alpine AS build
 
 # 2️⃣ Set working directory
 WORKDIR /app
@@ -15,12 +15,11 @@ RUN npm install
 # 5️⃣ Copy rest of app
 COPY . .
 
-# 6️⃣ Expose dev server port
-EXPOSE 3000
+RUN npm run build
 
-# 7️⃣ Set env for CRA dev server
-ENV CHOKIDAR_USEPOLLING=true
-ENV HOST=0.0.0.0
-
-# 8️⃣ Start CRA dev server
-CMD ["npm", "start"]
+#Serve with Nginx
+FROM nginx:alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

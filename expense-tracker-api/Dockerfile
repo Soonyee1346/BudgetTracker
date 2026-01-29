@@ -8,14 +8,16 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --omit=dev
 
 # Copy the rest of the app
 COPY . .
+
+RUN npx prisma generate
 
 # Expose backend port
 EXPOSE 3001
 
 # Start the app
-CMD ["npm", "run", "dev"]
+CMD ["node", "src/app.js"]
 
