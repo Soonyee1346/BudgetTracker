@@ -2,6 +2,8 @@ const prisma = require('../db/prismaClient');
 
 const getMonthlySummary = async (month) => {
 
+    console.log("hi")
+
     const start = new Date(`${month}-01`);
     const end = new Date(start);
     end.setMonth(end.getMonth() + 1);
@@ -27,6 +29,8 @@ const getMonthlySummary = async (month) => {
         byCategory[category] = (byCategory[category] || 0) + val;
     });
 
+    totalSpent = Number(totalSpent.toFixed(2))
+
     const budgetStatus = {};
     budgets.forEach(({ category, monthly_limit }) => {
         const limit = monthly_limit.toNumber();
@@ -39,7 +43,7 @@ const getMonthlySummary = async (month) => {
     });
 
     return {
-        totalSpent: Number(totalSpent.toFixed(2)),
+        totalSpent,
         byCategory,
         budgetStatus
     };
