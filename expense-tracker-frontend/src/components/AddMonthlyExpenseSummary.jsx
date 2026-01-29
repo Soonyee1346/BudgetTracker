@@ -1,6 +1,10 @@
 
 const AddMonthlyExpenseSummary = ({ summary, month, setMonth, setCategoryFilter }) => {
 
+    if(!summary || !summary.budgetStatus) {
+        return <p>Loading summary data...</p>
+    }
+
     return (
         <>
             <h2>Monthly Expense Summary</h2>
