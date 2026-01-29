@@ -74,7 +74,7 @@ const updateExpense = async (id, amount, category, description, date) => {
     } catch {
         return {
             id,
-            amount,
+            amount: Number(amount),
             category,
             description,
             date,

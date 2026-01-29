@@ -2,6 +2,8 @@ const prisma = require('../db/prismaClient')
 
 const upsertBudget = async (category, monthly_limit) => {
 
+    const limit = Number(monthly_limit);
+
     const existing = await prisma.budget.findFirst({
         where: { category }
     });
@@ -9,24 +11,24 @@ const upsertBudget = async (category, monthly_limit) => {
     if (existing) {
         const updated = await prisma.budget.update({
             where: { id: existing.id },
-            data: { monthly_limit }
+            data: { monthly_limit: limit }
         });
 
         return {
             category,
-            monthly_limit,
+            monthly_limit: updated.monthly_limit.toNumber(),
             updated: true
         };
     }
 
     const created = await prisma.budget.create({
-        data: { category, monthly_limit }
+        data: { category, monthly_limit: limit }
     });
 
     return {
         id: created.id,
         category,
-        monthly_limit,
+        monthly_limit: created.monthly_limit.toNumber(),
         updated: false
     };
 };
@@ -37,7 +39,13 @@ const getBudgets = async () => {
             id: 'asc'
         }
     })
-    return { rows };
+
+    const formattedRows = rows.map(budget = ({
+        ...budget,
+        monthly_limit: budget.monthly_limit.toNumber()
+    }));
+
+    return { rows: formattedRows };
 };
 
 const updateBudget = async (id, category, monthly_limit) => {
@@ -54,14 +62,14 @@ const updateBudget = async (id, category, monthly_limit) => {
         return {
             id,
             category,
-            monthly_limit,
+            monthly_limit: updated.monthly_limit.toNumber(),
             updated: true
         };
     } catch {
         return {
             id,
             category,
-            monthly_limit,
+            monthly_limit: Number(monthly_limit),
             updated: false
         }
     }
