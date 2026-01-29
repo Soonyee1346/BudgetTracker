@@ -6,7 +6,7 @@ const ExpenseRow = ({ expense, onDelete, onUpdate, index }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
-        amount: amount.toFixed(2),
+        amount: amount,
         category: category,
         description: description,
         date: date
@@ -44,7 +44,7 @@ const ExpenseRow = ({ expense, onDelete, onUpdate, index }) => {
 
     useEffect(() => {
         setFormData({
-            amount: expense.amount.toFixed(2),
+            amount: expense.amount,
             category: expense.category,
             description: expense.description,
             date: expense.date
@@ -129,7 +129,7 @@ const ExpenseRow = ({ expense, onDelete, onUpdate, index }) => {
                     onChange={handleChange}
                 />
             ) : (
-                amount.toFixed(2)
+                amount
             )}
             </td>
 
