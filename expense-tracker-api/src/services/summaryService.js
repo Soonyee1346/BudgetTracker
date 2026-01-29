@@ -20,33 +20,26 @@ const getMonthlySummary = async (month) => {
 
     let totalSpent = 0;
     let byCategory = {};
-    let budgetStatus = {};
 
-    expenses.forEach(({ amount, category}) => {
+    expenses.forEach(({ amount, category }) => {
+        const val = amount.toNumber();
         totalSpent += amount;
-
-        if(!byCategory[category]) {
-            byCategory[category] = 0;
-        }
-
-        byCategory[category] += amount;
-        byCategory[category] = Number(byCategory[category].toFixed(2));
+        byCategory[category] = (byCategory[category] || 0) + val;
     });
 
-    totalSpent = Number(totalSpent.toFixed(2));
-
+    const budgetStatus = {};
     budgets.forEach(({ category, monthly_limit }) => {
-        const spent = Number((byCategory[category] || 0).toFixed(2));
-
+        const limit = monthly_limit.toNumber();
+        const spent = byCategory[category] || 0;
         budgetStatus[category] = {
-            limit: monthly_limit,
-            spent,
-            overBudget: spent > monthly_limit
+            limit,
+            spent: Number(spent.toFixed(2)),
+            overBudget: spent > limit
         };
     });
 
     return {
-        totalSpent,
+        totalSpent: Number(totalSpent.toFixed(2)),
         byCategory,
         budgetStatus
     };

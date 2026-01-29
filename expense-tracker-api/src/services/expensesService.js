@@ -30,9 +30,15 @@ const getExpenses = async (month) => {
 
 const addExpense = async (amount, category, description, date) => {
     
-    return await prisma.expense.create({
-        data: { amount, category, description, date }
+    const created = await prisma.expense.create({
+        data: { amount: Number(amount),
+            category,
+            description,
+            date 
+        }
     });
+
+    return { ...created, amount: created.amount.toNumber() };
 }
 
 const deleteExpense = async (id) => {
@@ -53,7 +59,7 @@ const updateExpense = async (id, amount, category, description, date) => {
         const updated = await prisma.expense.update({
             where: { id },
             data: {
-                amount, 
+                amount: Number(amount), 
                 category, 
                 description, 
                 date
@@ -62,6 +68,7 @@ const updateExpense = async (id, amount, category, description, date) => {
 
         return {
             ...updated,
+            amount: updated.amount.toNumber(),
             updated: true
         };
     } catch {
