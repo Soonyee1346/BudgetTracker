@@ -1,29 +1,31 @@
-# frontend/Dockerfile
+# Stage 1: Build the React Application
+FROM node:20-alpine AS build
 
-# 1️⃣ Base image
-FROM node:20-alpine
-
+# 1. Receive the build argument from GitHub Actions
 ARG REACT_APP_API_URL
+# 2. Bake it into the app during the build process
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
-# 2️⃣ Set working directory
 WORKDIR /app
 
-# 3️⃣ Copy dependency files first (for caching)
 COPY package*.json ./
-
-# 4️⃣ Install dependencies
 RUN npm install
 
-# 5️⃣ Copy rest of app
 COPY . .
 
-# 6️⃣ Expose dev server port
-EXPOSE 3000
+# 3. Create the production build (Outputs to /app/build)
+RUN npm run build
 
-# 7️⃣ Set env for CRA dev server
-ENV CHOKIDAR_USEPOLLING=true
-ENV HOST=0.0.0.0
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
 
-# 8️⃣ Start CRA dev server
-CMD ["npm", "start"]
+# 4. Copy the custom Nginx config you already have
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# 5. Copy the built React files from the previous stage
+# Note: Create React App uses 'build', not 'dist'
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
