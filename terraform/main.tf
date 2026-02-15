@@ -185,14 +185,15 @@ resource "aws_instance" "app_server" {
 
     user_data = <<-EOF
                 #!/bin/bash
-                apt-get update
-                apt-get install -y docker.io
+                apt-get update -y
+                apt-get install -y docker.io docker-compose
                 systemctl start docker
                 systemctl enable docker
 
-                mkdir -p /usr/local/lib/docker/cli-plugins/
-                curl -SL https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
-                chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+                usermod -aG docker ubuntu
+
+                mkdir -p /home/ubuntu/app
+                chown ubuntu:ubuntu /home/ubuntu/app
                 EOF
     
     tags = {

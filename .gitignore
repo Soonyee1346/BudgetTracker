@@ -3,6 +3,8 @@
 
 # env files
 **/.env
+.env.local
+.env.*.local
 
 # builds
 **/dist
@@ -18,3 +20,6 @@ Thumbs.db
 terraform/.terraform/providers/registry.terraform.io/hashicorp/aws/6.31.0/darwin_arm64/terraform-provider-aws_v6.31.0_x5
 budget-deploy-key
 budget-deploy-key.pub
+
+.idea/
+.vscode/
