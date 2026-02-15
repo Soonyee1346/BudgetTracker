@@ -20,7 +20,7 @@ const BudgetCard = ({ budget, onDelete, onUpdate }) => {
 
     const handleSave = async () => {
         try {
-            await fetch(`api/budgets/${budget.id}`, {
+            await fetch(`/api/budgets/${budget.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

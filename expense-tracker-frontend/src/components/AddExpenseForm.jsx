@@ -21,7 +21,7 @@ const AddExpenseForm = ({ onNewExpense }) => {
         event.preventDefault();
 
         try {
-            const res = await fetch(`api/expenses`, {
+            const res = await fetch(`/api/expenses`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
