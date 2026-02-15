@@ -19,7 +19,7 @@ const AddBudgetCard = ({ onNewBudget }) => {
         event.preventDefault();
 
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/budgets`, {
+            const res = await fetch(`api/budgets`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
