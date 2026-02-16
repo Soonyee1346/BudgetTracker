@@ -23,3 +23,6 @@ budget-deploy-key.pub
 
 .idea/
 .vscode/
+terraform/terraform.tfstate.backup
+terraform/terraform.tfstate
+terraform/.terraform
