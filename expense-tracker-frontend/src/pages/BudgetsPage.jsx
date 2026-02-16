@@ -19,8 +19,6 @@ const BudgetsPage = () => {
         const confirmed = window.confirm(`Delete budget: ${category}?`);
         if (!confirmed) return;
 
-        console.log("hiihihhihihihihi")
-
         try {
             await fetch(`/api/budgets/${budgetId}`, {
                 method: 'DELETE'

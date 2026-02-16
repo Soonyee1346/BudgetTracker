@@ -22,10 +22,24 @@ const DashboardPage = () => {
     const loadExpenses = useCallback(async () => {
         try {
             const res = await fetch(`/api/expenses?month=${month}`);
+
+            if (!res.ok) {
+                const errData = await res.json();
+                console.error("API Error:", errData);
+                return
+            }
+
             const data = await res.json();
-            setExpenses(data);
+
+            if (Array.isArray(data)) {
+                setExpenses(data);
+            } else {
+                console.error("Received non-array data:", data);
+                setExpenses([]);
+            }
         } catch (err) {
-            console.error('Error loading summary:', err)
+            console.error('Error loading expenses:', err);
+            setExpenses([]);
         }
     }, [month]);
 
