@@ -79,5 +79,3 @@ jobs:
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}/frontend:${{ github.sha }}
             ghcr.io/${{ env.REPO_LOWER }}/frontend:latest
-          build-args: |
-            REACT_APP_API_URL=${{ secrets.EC2_PUBLIC_IP }}

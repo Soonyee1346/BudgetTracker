@@ -11,7 +11,7 @@ const DashboardPage = () => {
 
     const loadSummary = useCallback(async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/summary/monthly?month=${month}`);
+            const res = await fetch(`/api/summary/monthly?month=${month}`);
             const data = await res.json();
             setSummary(data);
         } catch (err) {
@@ -21,11 +21,25 @@ const DashboardPage = () => {
 
     const loadExpenses = useCallback(async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/expenses?month=${month}`);
+            const res = await fetch(`/api/expenses?month=${month}`);
+
+            if (!res.ok) {
+                const errData = await res.json();
+                console.error("API Error:", errData);
+                return
+            }
+
             const data = await res.json();
-            setExpenses(data);
+
+            if (Array.isArray(data)) {
+                setExpenses(data);
+            } else {
+                console.error("Received non-array data:", data);
+                setExpenses([]);
+            }
         } catch (err) {
-            console.error('Error loading summary:', err)
+            console.error('Error loading expenses:', err);
+            setExpenses([]);
         }
     }, [month]);
 
@@ -52,7 +66,7 @@ const DashboardPage = () => {
         if (!confirmed) return;
 
         try {
-            await fetch(`${process.env.REACT_APP_API_URL}/expenses/${expenseId}`, {
+            await fetch(`/api/expenses/${expenseId}`, {
                 method: 'DELETE'
             });
 
