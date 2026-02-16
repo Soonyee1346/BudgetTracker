@@ -46,7 +46,7 @@ Backend: An Express API running on port 3001 (internal).
 Database: An AWS RDS PostgreSQL instance located in a private subnet for security.
 
 🏁 Getting Started (Local Development)
-Follow these steps to run the application locally.
+Follow these steps to run the application locally on your machine.
 
 Prerequisites
 Node.js (v18+)
@@ -96,33 +96,59 @@ terraform plan
 
 # Apply changes (Creates VPC, RDS, EC2, etc.)
 terraform apply
-Note the ec2_public_ip and rds_endpoint outputs.
+Note the ec2_public_ip and rds_endpoint outputs from Terraform.
 
-3. Configuration & Deployment
-Since the .env file (containing secrets) and docker-compose.yml (orchestration map) are not stored in the git repository or built into the AMI, you must copy them to the server securely.
+3. Configuration Setup
+Since .env files (containing secrets) and docker-compose.yml are not stored in the git repository, you must copy them to the server securely.
 
-Step A: Securely Copy Configuration Files
-Run these commands from your local machine (Windows/Mac/Linux):
+Run these commands from your local machine:
 
 Bash
-# Copy docker-compose.yml to the app directory
+# 1. Copy docker-compose.yml to the app directory
 scp -i terraform/budget-deploy-key docker-compose.yml ubuntu@<EC2_PUBLIC_IP>:~/app/
 
-# Copy the backend .env file (Ensure this file has the Production RDS URL)
+# 2. Copy the backend .env file (Ensure this file has the Production RDS URL)
 scp -i terraform/budget-deploy-key expense-tracker-api/.env ubuntu@<EC2_PUBLIC_IP>:~/app/
-Step B: Start the Application
+4. Initial Launch
 SSH into the instance and start the containers:
 
 Bash
-# 1. SSH into the server
 ssh -i terraform/budget-deploy-key ubuntu@<EC2_PUBLIC_IP>
 
-# 2. Navigate to the app directory
 cd ~/app
-
-# 3. Pull the latest images and start
 sudo docker-compose pull
 sudo docker-compose up -d
+🎮 Managing the Application (Docker Commands)
+Once deployed, use these commands on the EC2 server to manage the app.
+
+🔄 Updating the App (Deployment)
+When you push code to GitHub, the CI/CD pipeline builds new images. To update the running server:
+
+Bash
+cd ~/app
+sudo docker-compose pull      # Download new images
+sudo docker-compose up -d     # Recreate containers with new images
+📜 Viewing Logs
+To debug issues or see server activity:
+
+Bash
+# View all logs (add -f to follow real-time)
+sudo docker-compose logs -f
+
+# View only backend logs
+sudo docker-compose logs -f backend
+
+# View only frontend (Nginx) logs
+sudo docker-compose logs -f frontend
+🧹 Maintenance & Cleanup
+If the server runs out of space or you need a clean slate:
+
+Bash
+# Stop all containers
+sudo docker-compose down
+
+# Remove unused images (frees up space)
+sudo docker system prune -a -f
 🔄 CI/CD Pipeline
 This project includes a GitHub Actions workflow defined in .github/workflows/ci.yml.
 
