@@ -26,3 +26,4 @@ budget-deploy-key.pub
 terraform/terraform.tfstate.backup
 terraform/terraform.tfstate
 terraform/.terraform
+*.tfstate
