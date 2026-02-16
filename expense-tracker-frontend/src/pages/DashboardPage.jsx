@@ -11,7 +11,7 @@ const DashboardPage = () => {
 
     const loadSummary = useCallback(async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/summary/monthly?month=${month}`);
+            const res = await fetch(`/api/summary/monthly?month=${month}`);
             const data = await res.json();
             setSummary(data);
         } catch (err) {
@@ -21,7 +21,7 @@ const DashboardPage = () => {
 
     const loadExpenses = useCallback(async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/expenses?month=${month}`);
+            const res = await fetch(`/api/expenses?month=${month}`);
             const data = await res.json();
             setExpenses(data);
         } catch (err) {
@@ -52,7 +52,7 @@ const DashboardPage = () => {
         if (!confirmed) return;
 
         try {
-            await fetch(`${process.env.REACT_APP_API_URL}/expenses/${expenseId}`, {
+            await fetch(`/api/expenses/${expenseId}`, {
                 method: 'DELETE'
             });
 

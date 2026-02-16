@@ -7,7 +7,7 @@ const BudgetsPage = () => {
 
     const loadBudgets = async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/budgets`);
+            const res = await fetch(`/api/budgets`);
             const data = await res.json();
             setBudgets(data.rows);
         } catch (err) {
@@ -19,8 +19,10 @@ const BudgetsPage = () => {
         const confirmed = window.confirm(`Delete budget: ${category}?`);
         if (!confirmed) return;
 
+        console.log("hiihihhihihihihi")
+
         try {
-            await fetch(`${process.env.REACT_APP_API_URL}/budgets/${budgetId}`, {
+            await fetch(`/api/budgets/${budgetId}`, {
                 method: 'DELETE'
             });
 
